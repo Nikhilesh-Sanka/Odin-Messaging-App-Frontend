@@ -50,6 +50,7 @@ export default function Chats() {
 
   // handling opening of chats and joining the appropriate rooms
   function openChat(chatId) {
+    console.log("open chat is executed");
     setOpenedChat(chatId);
   }
   return (
@@ -129,6 +130,7 @@ function ChatDisplay(props) {
 
   // fetching the chat details
   useEffect(() => {
+    setChat(null);
     fetch(`${serverUrl}/user/chat?chatId=${props.chatId}`, {
       method: "GET",
       headers: {
@@ -162,7 +164,7 @@ function ChatDisplay(props) {
     return () => {
       props.socket.off("receive-message");
     };
-  }, []);
+  }, [props.chatId]);
 
   // sending a message
   async function sendMessage() {
