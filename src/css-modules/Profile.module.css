@@ -1,0 +1,84 @@
+.profile h1 {
+  text-align: center;
+  margin: 100px 0;
+  font-family: "font-1";
+}
+.profile form {
+  width: min(400px, calc(100% - 20px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 80px 50px 80px 50px;
+  place-items: center;
+  gap: 10px;
+}
+
+.profile form > img {
+  grid-area: 1/1 / span 1 / span 1;
+  width: 70px;
+  height: auto;
+  border-radius: 50%;
+  border: 1px solid black;
+}
+
+.profile form label:nth-of-type(1) {
+  grid-area: 2/1 / span 1 / span 1;
+  width: 100%;
+}
+
+.profile form label:nth-of-type(1) input {
+  width: 100%;
+  height: 25px;
+}
+
+.profile form label:nth-of-type(2) {
+  grid-area: 2/2 / span 1 / span 1;
+}
+
+.profile form label:nth-of-type(3) {
+  grid-area: 3/1 / span 2 / span 2;
+  width: 100%;
+  align-self: start;
+}
+.profile form label:nth-of-type(3) textarea {
+  grid-area: 3/1 / span 2 / span 2;
+  width: 100%;
+  height: 50px;
+}
+
+.profile form button {
+  grid-area: 4/1 / span 1 / span 2;
+  height: 30px;
+  width: 75px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 7px;
+}
+.profile form > *:nth-child(5) {
+  grid-area: 4/1 / span 1 / span 2;
+}
+/* making the profile page responsive */
+@media (max-width: 360px) {
+  .profile form {
+    grid-template-rows: 80px 50px 50px 80px 50px;
+  }
+  .profile form label:nth-of-type(1) {
+    grid-area: 2/1 / span 1 / span 2;
+    width: 100%;
+  }
+  .profile form label:nth-of-type(2) {
+    grid-area: 3/1 / span 1 / span 2;
+    width: 100%;
+  }
+  .profile form label:nth-of-type(3) {
+    grid-area: 4/1 / span 1 / span 2;
+    width: 100%;
+  }
+  .profile form button {
+    grid-area: 5/1 / span 1 / span 2;
+  }
+  .profile form > *:nth-child(5) {
+    grid-area: 5/1 / span 1 / span 2;
+  }
+}

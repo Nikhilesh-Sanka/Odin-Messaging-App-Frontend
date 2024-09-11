@@ -1,0 +1,81 @@
+.requests h1,
+.requests h2 {
+  font-family: "font-1";
+  text-align: center;
+}
+
+.requests h1 {
+  margin: 50px 0;
+}
+.requests h2 {
+  margin: 20px 0 0 0;
+}
+
+/* styling the received requests */
+.requests .received-request-card {
+  width: min(450px, calc(100% - 20px));
+  margin: 20px auto;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  grid-template-rows: repeat(2, 1fr);
+  place-items: center;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px;
+  img {
+    width: 60px;
+    height: auto;
+    border-radius: 50%;
+    border: 1px solid black;
+  }
+  .buttons {
+    grid-area: 2/1 / span 1 / span 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .buttons button {
+    background-color: black;
+    border-radius: 5px;
+    border: none;
+    margin: 10px;
+    height: 30px;
+    padding: 4px;
+    color: white;
+  }
+  .buttons button:last-child {
+    background-color: red;
+  }
+}
+
+/* styling the sent request cards */
+.requests .sent-request-card {
+  width: min(450px, calc(100% - 20px));
+  margin: 20px auto;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  grid-template-rows: repeat(2, 1fr);
+  place-items: center;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px;
+  img {
+    width: 60px;
+    height: auto;
+    border-radius: 50%;
+    border: 1px solid black;
+    grid-area: 1/1 / span 2 / span 1;
+  }
+  p {
+    grid-area: 1/2 / span 1 / span 1;
+  }
+  button {
+    grid-area: 2/2 / span 1 / span 1;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 4px;
+  }
+}

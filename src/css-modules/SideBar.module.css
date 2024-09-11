@@ -1,0 +1,18 @@
+.nav-bar {
+  width: 50px;
+  position: fixed;
+  background-color: #f97316;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 3;
+}
+.nav-bar img {
+  width: 25px;
+  height: auto;
+  margin: 10px 0;
+}

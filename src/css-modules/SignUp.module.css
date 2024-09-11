@@ -1,0 +1,100 @@
+.sign-up h1 {
+  font-family: "font-1";
+  margin: 50px 0;
+  text-align: center;
+}
+
+.sign-up > div:first-of-type {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  column-gap: 10px;
+  place-items: center;
+  width: calc(100% - 50px);
+  margin: 0 auto;
+  place-items: center;
+}
+
+/*styling the main part*/
+.sign-up main {
+  place-self: center;
+  width: min(400px, calc(100% - 20px));
+  margin: 0 auto;
+  height: max-content;
+}
+.sign-up main h2 {
+  font-family: "font-1";
+  text-align: center;
+  margin: 10px 0;
+}
+.sign-up main > p {
+  text-align: center;
+}
+/** styling the form part */
+.sign-up main form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  row-gap: 10px;
+  column-gap: 10px;
+  background-color: #f97316;
+  padding: 30px 20px;
+  border-radius: 7px;
+}
+
+.sign-up main form label {
+  width: 100%;
+  place-self: center;
+}
+.sign-up main form label input {
+  width: 100%;
+  height: 24px;
+  display: block;
+  margin-top: 5px;
+}
+.sign-up main form button {
+  place-self: center;
+  border: none;
+  border-radius: 7px;
+  background-color: black;
+  color: white;
+  height: 30px;
+  width: 80px;
+}
+.sign-up main form > *:nth-child(1) {
+  grid-area: 1/1 / span 1 / span 1;
+}
+.sign-up main form > *:nth-child(2) {
+  grid-area: 1/2 / span 1 / span 1;
+}
+.sign-up main form > *:nth-child(3) {
+  grid-area: 2/1 / span 1 / span 2;
+}
+.sign-up main form > *:nth-child(4) {
+  grid-area: 3/1 / span 1 / span 2;
+}
+.sign-up main form > *:nth-child(5) {
+  grid-area: 4/1 / span 1 / span 2;
+}
+.sign-up main form > *:nth-child(6) {
+  grid-area: 5/1 / span 1 / span 2;
+}
+
+.sign-up .preview-img {
+  place-self: center;
+}
+
+.sign-up .preview-img img {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+}
+
+/* making the website responsive */
+@media (max-width: 850px) {
+  .sign-up div:first-of-type {
+    grid-template-columns: 1fr;
+  }
+  .preview-img {
+    display: none;
+  }
+}

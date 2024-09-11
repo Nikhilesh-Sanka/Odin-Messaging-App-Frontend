@@ -1,0 +1,21 @@
+.loading {
+  display: block;
+  margin: 0 auto;
+}
+
+.loading img {
+  margin: 0 auto;
+  display: block;
+  width: 30px;
+  height: auto;
+  animation: loading-animation 1s infinite linear;
+}
+
+@keyframes loading-animation {
+  0% {
+    transform: rotate(0turn);
+  }
+  100% {
+    transform: rotate(1turn);
+  }
+}
