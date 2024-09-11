@@ -35,16 +35,22 @@ export default function Chats() {
     // connecting to the socket
     socket.connect();
 
+    // joining the chat room on reconnects
+    socket.on("connect", () => {
+      if (openedChat) {
+        socket.emit("join-chat", `chat-${openedChat}`);
+      }
+    });
+
     return () => {
       // disconnecting the socket
       socket.disconnect();
     };
-  }, []);
+  }, [openedChat]);
 
   // handling opening of chats and joining the appropriate rooms
   function openChat(chatId) {
     setOpenedChat(chatId);
-    socket.emit("join-chat", `chat-${chatId}`);
   }
   return (
     <div className={ChatStyles["chats"]}>
@@ -150,9 +156,8 @@ function ChatDisplay(props) {
                 <p>${dateString}</p>
             </div>
         `;
+      scrollToLastMessage();
     });
-
-    console.log(messages);
 
     return () => {
       props.socket.off("receive-message");
@@ -166,6 +171,7 @@ function ChatDisplay(props) {
     }
     const text = messageField.current.value.trim();
     props.socket.emit("send-message", text, `chat-${chat.id}`);
+    messageField.current.value = "";
     const response = await fetch(`${serverUrl}/user/chat/message`, {
       method: "POST",
       body: JSON.stringify({
@@ -187,7 +193,6 @@ function ChatDisplay(props) {
             </div>
         `;
       scrollToLastMessage();
-      messageField.current.value = "";
     } else {
       navigate("/serverError");
     }
@@ -195,12 +200,8 @@ function ChatDisplay(props) {
 
   //scrolling the messages to the last message
   function scrollToLastMessage() {
-    const y =
-      messages.current.lastElementChild.getBoundingClientRect().top -
-      messages.current.getBoundingClientRect().top;
-    messages.current.scroll(0, y, {
-      behavior: "smooth",
-    });
+    const messages = document.querySelector(`.${ChatStyles["messages"]}`);
+    messages.scrollTop = messages.scrollHeight;
   }
 
   // handling the open and close of profile
