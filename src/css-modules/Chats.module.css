@@ -80,7 +80,7 @@
       border-radius: 50%;
     }
     h1 {
-      text-wrap: no-wrap;
+      white-space: no-wrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
