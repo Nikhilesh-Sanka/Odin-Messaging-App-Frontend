@@ -8,6 +8,7 @@ import Profile from "./components/Profile.jsx";
 import SearchPeople from "./components/SearchPeople.jsx";
 import Requests from "./components/Requests.jsx";
 import Chats from "./components/Chats.jsx";
+import GroupChats from "./components/GroupChats.jsx";
 import Logout from "./components/Logout.jsx";
 import ServerError from "./components/ServerError.jsx";
 import UnknownError from "./components/UnknownError.jsx";
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
         path: "/chats",
         element: <Chats />,
       },
+      {
+        path: "/groupChats",
+        element: <GroupChats />,
+      },
     ],
   },
   {
@@ -46,7 +51,7 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "logout",
+    path: "/logout",
     element: <Logout />,
   },
   {

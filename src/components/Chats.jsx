@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import socket from "../socket.js";
+import { SocketContext } from "../App.jsx";
 import Loading from "./Loading.jsx";
 import { serverUrl } from "../config.js";
 import ChatStyles from "../css-modules/Chats.module.css";
@@ -10,6 +10,7 @@ export default function Chats() {
   const [chats, setChats] = useState(null);
   const [openedChat, setOpenedChat] = useState(null);
   const [sidebarStatus, setSidebarStatus] = useState(true);
+  const { socket, setCurrentRoom } = useContext(SocketContext);
   const { token } = useOutletContext();
   const navigate = useNavigate();
 
@@ -31,27 +32,15 @@ export default function Chats() {
       .then((chats) => {
         setChats(chats);
       });
-
-    // connecting to the socket
-    socket.connect();
-
-    // joining the chat room on reconnects
-    socket.on("connect", () => {
-      if (openedChat) {
-        socket.emit("join-chat", `chat-${openedChat}`);
-      }
-    });
-
     return () => {
-      // disconnecting the socket
-      socket.disconnect();
+      setCurrentRoom(null);
     };
-  }, [openedChat]);
+  }, [token]);
 
   // handling opening of chats and joining the appropriate rooms
   function openChat(chatId) {
-    console.log("open chat is executed");
     setOpenedChat(chatId);
+    setCurrentRoom(`chat-${chatId}`);
   }
   return (
     <div className={ChatStyles["chats"]}>
@@ -105,7 +94,7 @@ function Sidebar(props) {
           >
             <img src={chat.receiverProfile.image} />
             <p>{chat.username}</p>
-            <p>{chat.status}</p>
+            <p>{chat.status > 0 ? "online" : "offline"}</p>
           </div>
         );
       })}
@@ -124,6 +113,7 @@ Sidebar.propTypes = {
 function ChatDisplay(props) {
   const [chat, setChat] = useState(null);
   const [profileOpen, setProfileOpen] = useState(false);
+  const { socket, currentRoom, userId } = useContext(SocketContext);
   const navigate = useNavigate();
   const messageField = useRef(null);
   const messages = useRef(null);
@@ -148,23 +138,34 @@ function ChatDisplay(props) {
         setChat(chat);
       });
     // hearing for receive messages
-    props.socket.on("receive-message", (message) => {
+    socket.on("receive-message", (message, sentUserId) => {
       const date = new Date();
       const dateString = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
 
-      messages.current.innerHTML += `
+      if (sentUserId === userId) {
+        const date = new Date();
+        const dateString = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+        messages.current.innerHTML += `
+            <div class="${ChatStyles["message"]} ${ChatStyles["client-message"]}">
+                <p>${message}</p>
+                <p>${dateString}</p>
+            </div>
+        `;
+      } else {
+        messages.current.innerHTML += `
             <div class="${ChatStyles["message"]}">
                 <p>${message}</p>
                 <p>${dateString}</p>
             </div>
         `;
+      }
       scrollToLastMessage();
     });
 
     return () => {
-      props.socket.off("receive-message");
+      socket.off("receive-message");
     };
-  }, [props.chatId]);
+  }, [props.chatId, userId]);
 
   // sending a message
   async function sendMessage() {
@@ -172,8 +173,17 @@ function ChatDisplay(props) {
       return;
     }
     const text = messageField.current.value.trim();
-    props.socket.emit("send-message", text, `chat-${chat.id}`);
+    socket.emit("send-message", text, currentRoom);
     messageField.current.value = "";
+    const date = new Date();
+    const dateString = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+    messages.current.innerHTML += `
+            <div class="${ChatStyles["message"]} ${ChatStyles["client-message"]}">
+                <p>${text}</p>
+                <p>${dateString}</p>
+            </div>
+        `;
+    scrollToLastMessage();
     const response = await fetch(`${serverUrl}/user/chat/message`, {
       method: "POST",
       body: JSON.stringify({
@@ -186,15 +196,7 @@ function ChatDisplay(props) {
       },
     });
     if (response.status === 201) {
-      const date = new Date();
-      const dateString = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
-      messages.current.innerHTML += `
-            <div class="${ChatStyles["message"]} ${ChatStyles["client-message"]}">
-                <p>${text}</p>
-                <p>${dateString}</p>
-            </div>
-        `;
-      scrollToLastMessage();
+      return;
     } else {
       navigate("/serverError");
     }

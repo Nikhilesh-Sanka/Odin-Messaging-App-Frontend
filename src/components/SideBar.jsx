@@ -10,6 +10,9 @@ export default function SideBar() {
       <Link to="/chats">
         <img src="./sidebar-chat-icon.svg" title="chats" />
       </Link>
+      <Link to="/groupChats">
+        <img src="./group-chat-icon.svg" />
+      </Link>
       <Link to="/requests">
         <img src="./sidebar-request-icon.svg" title="requests" />
       </Link>
