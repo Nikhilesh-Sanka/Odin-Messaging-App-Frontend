@@ -504,7 +504,11 @@ function Dashboard(props) {
                   }}
                 />
               </label>
-              <button onClick={changeGroupName}>
+              <button
+                onClick={() => {
+                  changeGroupName(chat.id, groupName);
+                }}
+              >
                 <img src="./plain-tick-icon.svg" />
                 edit
               </button>
