@@ -744,20 +744,39 @@ function GroupChatDisplay(props) {
               }`}
               key={index}
             >
-              <p>
-                {message.user.id === userId ? "you" : message.user.username}
-                <span>
-                  (
-                  {!message.userRole
-                    ? message.user.createdGroupChats.length !== 0
-                      ? "owner"
-                      : message.user.adminRoledGroupChats.length !== 0
-                      ? "admin"
-                      : "member"
-                    : message.userRole}
-                  )
-                </span>
-              </p>
+              {index !== 0 ? (
+                chat.messages[index - 1].user.id === message.id ? null : (
+                  <p>
+                    {message.user.id === userId ? "you" : message.user.username}
+                    <span>
+                      (
+                      {!message.userRole
+                        ? message.user.createdGroupChats.length !== 0
+                          ? "owner"
+                          : message.user.adminRoledGroupChats.length !== 0
+                          ? "admin"
+                          : "member"
+                        : message.userRole}
+                      )
+                    </span>
+                  </p>
+                )
+              ) : (
+                <p>
+                  {message.user.id === userId ? "you" : message.user.username}
+                  <span>
+                    (
+                    {!message.userRole
+                      ? message.user.createdGroupChats.length !== 0
+                        ? "owner"
+                        : message.user.adminRoledGroupChats.length !== 0
+                        ? "admin"
+                        : "member"
+                      : message.userRole}
+                    )
+                  </span>
+                </p>
+              )}
               <p>{message.text}</p>
               <p>{message.time}</p>
             </div>
