@@ -457,7 +457,7 @@ function Dashboard(props) {
   // function to kick out a member of the group
   async function kickOutUser(user) {
     const newMembers = groupMembers.filter((member) => member.id !== user.id);
-    const newAdmins = groupMembers.filter((admin) => admin.id !== user.id);
+    const newAdmins = groupAdmins.filter((admin) => admin.id !== user.id);
     setGroupAdmins(newAdmins);
     setGroupMembers(newMembers);
     const response = await fetch(`${serverUrl}/user/groupChat/members`, {
