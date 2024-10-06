@@ -749,7 +749,9 @@ function GroupChatDisplay(props) {
               key={index}
             >
               {index !== 0 ? (
-                chat.messages[index - 1].user.id === message.user.id ? null : (
+                chat.messages[index - 1].user.id === message.user.id ? (
+                  <p></p>
+                ) : (
                   <p>
                     {message.user.id === userId ? "you" : message.user.username}
                     <span>
