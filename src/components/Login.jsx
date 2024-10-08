@@ -76,7 +76,7 @@ export default function Login() {
           don&apos;t have a account? <Link to="/sign-up">sign-up</Link>
         </p>
         <p>
-          login with
+          login with{" "}
           <a
             href=""
             onClick={(e) => {
@@ -92,7 +92,7 @@ export default function Login() {
           </a>
         </p>
         <p>
-          login with
+          login with{" "}
           <a
             href=""
             onClick={(e) => {
