@@ -55,6 +55,9 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    input {
+      width: 100%;
+    }
     span.notification-button {
       width: 13px;
       height: 13px;
