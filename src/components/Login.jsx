@@ -75,8 +75,38 @@ export default function Login() {
         <p>
           don&apos;t have a account? <Link to="/sign-up">sign-up</Link>
         </p>
-        <p>login with demo account 1</p>
-        <p>login with demo account 2</p>
+        <p>
+          login with
+          <a
+            href=""
+            onClick={(e) => {
+              e.preventDefault();
+              localStorage.setItem(
+                "token",
+                "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3M2ZlOGNlOS05Mjc3LTQxNTMtOWEzNy0zM2I0YmQwNWViZjgiLCJpYXQiOjE3Mjg0MDY1Njl9.yFLmd82bACv2Mj-tP6LXdQgLfhtne3D9rBZTRiTiLeE"
+              );
+              navigate("/");
+            }}
+          >
+            demo account 1
+          </a>
+        </p>
+        <p>
+          login with
+          <a
+            href=""
+            onClick={(e) => {
+              e.preventDefault();
+              localStorage.setItem(
+                "token",
+                "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5NGM0NmRjZC0wOTlmLTQyZTItYWEzYS1mMmJjYTc4MTY3ODQiLCJpYXQiOjE3Mjg0MDYzODR9.t0W-qQMR-bA8i9JzGiM2ScGRrRt_5C2wkabjn-GS7KM"
+              );
+              navigate("/");
+            }}
+          >
+            demo account 2
+          </a>
+        </p>
       </form>
     </div>
   );
