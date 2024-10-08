@@ -11,6 +11,24 @@
   flex-direction: column;
   z-index: 3;
 }
+.nav-bar a {
+  position: relative;
+  span {
+    position: absolute;
+    z-index: 2;
+    top: -5px;
+    right: -5px;
+    height: 13px;
+    width: 13px;
+    border-radius: 50%;
+    background-color: black;
+    color: white;
+    font-size: 0.7rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
 .nav-bar img {
   width: 25px;
   height: auto;

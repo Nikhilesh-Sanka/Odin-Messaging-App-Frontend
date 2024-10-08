@@ -17,6 +17,7 @@
   .sidebar-chat {
     width: calc(100% - 20px);
     margin: 10px auto;
+    position: relative;
     display: grid;
     grid-template-columns: 50px 1fr;
     grid-template-rows: repeat(2, 1fr);
@@ -36,6 +37,19 @@
     p:last-of-type {
       grid-area: 2/2 / span 1 / span 1;
       font-size: 0.7rem;
+    }
+    span.notification-button {
+      width: 13px;
+      height: 13px;
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f97316;
+      color: black;
     }
   }
 }

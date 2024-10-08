@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import { SocketContext } from "../App.jsx";
+import { SocketContext, NotificationsContext } from "../App.jsx";
 import Loading from "./Loading.jsx";
 import { serverUrl } from "../config.js";
 import ChatStyles from "../css-modules/Chats.module.css";
@@ -11,6 +11,7 @@ export default function Chats() {
   const [openedChat, setOpenedChat] = useState(null);
   const [sidebarStatus, setSidebarStatus] = useState(true);
   const { socket, setCurrentRoom } = useContext(SocketContext);
+  const { notifications, setNotifications } = useContext(NotificationsContext);
   const { token } = useOutletContext();
   const navigate = useNavigate();
 
@@ -39,6 +40,11 @@ export default function Chats() {
 
   // handling opening of chats and joining the appropriate rooms
   function openChat(chatId) {
+    const newNotifications = JSON.parse(JSON.stringify(notifications));
+    newNotifications.chats = newNotifications.chats.filter(
+      (chatNotification) => chatNotification.chatId !== chatId
+    );
+    setNotifications(newNotifications);
     setOpenedChat(chatId);
     setCurrentRoom(`chat-${chatId}`);
   }
@@ -70,6 +76,8 @@ export default function Chats() {
 
 // chat sidebar
 function Sidebar(props) {
+  const { notifications } = useContext(NotificationsContext);
+
   return (
     <div
       className={`${ChatStyles["sidebar"]} ${
@@ -95,6 +103,17 @@ function Sidebar(props) {
             <img src={chat.receiverProfile.image} />
             <p>{chat.username}</p>
             <p>{chat.status > 0 ? "online" : "offline"}</p>
+            {notifications.chats.find(
+              (chatNotification) => chatNotification.chatId === chat.id
+            ) ? (
+              <span className={ChatStyles["notification-button"]}>
+                {
+                  notifications.chats.find(
+                    (chatNotification) => chatNotification.chatId === chat.id
+                  ).numOfMessages
+                }
+              </span>
+            ) : null}
           </div>
         );
       })}
@@ -138,13 +157,11 @@ function ChatDisplay(props) {
         setChat(chat);
       });
     // hearing for receive messages
-    socket.on("receive-message", (message, sentUserId) => {
+    socket.on("receive-message", async (message, sentUserId) => {
       const date = new Date();
       const dateString = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
 
       if (sentUserId === userId) {
-        const date = new Date();
-        const dateString = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
         messages.current.innerHTML += `
             <div class="${ChatStyles["message"]} ${ChatStyles["client-message"]}">
                 <p>${message}</p>
@@ -158,14 +175,14 @@ function ChatDisplay(props) {
                 <p>${dateString}</p>
             </div>
         `;
+        scrollToLastMessage();
       }
-      scrollToLastMessage();
     });
 
     return () => {
       socket.off("receive-message");
     };
-  }, [props.chatId, userId]);
+  }, [props.chatId, userId, socket]);
 
   // sending a message
   async function sendMessage() {
@@ -173,7 +190,13 @@ function ChatDisplay(props) {
       return;
     }
     const text = messageField.current.value.trim();
-    socket.emit("send-message", text, currentRoom);
+    socket.emit(
+      "send-message",
+      text,
+      currentRoom,
+      props.chatId,
+      chat.receiverId
+    );
     messageField.current.value = "";
     const date = new Date();
     const dateString = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
@@ -184,22 +207,6 @@ function ChatDisplay(props) {
             </div>
         `;
     scrollToLastMessage();
-    const response = await fetch(`${serverUrl}/user/chat/message`, {
-      method: "POST",
-      body: JSON.stringify({
-        chatId: chat.id,
-        text: text,
-      }),
-      headers: {
-        auth: props.token,
-        "Content-Type": "application/json",
-      },
-    });
-    if (response.status === 201) {
-      return;
-    } else {
-      navigate("/serverError");
-    }
   }
 
   //scrolling the messages to the last message

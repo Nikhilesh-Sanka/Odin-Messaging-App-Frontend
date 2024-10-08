@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, createContext, useRef } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import Loading from "./Loading.jsx";
 import { serverUrl } from "../config.js";
-import { SocketContext } from "../App.jsx";
+import { SocketContext, NotificationsContext } from "../App.jsx";
 import GroupChatsStyles from "../css-modules/GroupChats.module.css";
 import PropTypes from "prop-types";
 
@@ -114,6 +114,7 @@ function Sidebar() {
     setSidebarOpen,
     changeGroupName,
   } = useContext(GroupChatsContext);
+  const { notifications, setNotifications } = useContext(NotificationsContext);
   const navigate = useNavigate();
 
   // handling the creation of a group
@@ -148,6 +149,11 @@ function Sidebar() {
     });
     if (response.status === 200) {
       const { chat } = await response.json();
+      const newNotifications = JSON.parse(JSON.stringify(notifications));
+      newNotifications.groupChats = newNotifications.groupChats.filter(
+        (groupChatNotification) => groupChatNotification.groupChatId !== id
+      );
+      setNotifications(newNotifications);
       setOpenedChat(chat);
       setCurrentRoom(`group-${chat.id}`);
     } else {
@@ -196,7 +202,9 @@ function Sidebar() {
 function SidebarChatCard(props) {
   const [inputName, setInputName] = useState(props.chat.name);
   const [nameBeingEdited, setNameBeingEdited] = useState(false);
+  const { notifications } = useContext(NotificationsContext);
 
+  console.log(notifications);
   return (
     <div
       className={GroupChatsStyles["group-chat"]}
@@ -233,6 +241,19 @@ function SidebarChatCard(props) {
           setNameBeingEdited((nameBeingEdited) => !nameBeingEdited);
         }}
       />
+      {notifications.groupChats.find(
+        (groupChatNotification) =>
+          groupChatNotification.groupChatId === props.chat.id
+      ) ? (
+        <span className={GroupChatsStyles["notification-button"]}>
+          {
+            notifications.groupChats.find(
+              (groupChatNotification) =>
+                groupChatNotification.groupChatId === props.chat.id
+            ).numOfMessages
+          }
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -702,25 +723,9 @@ function GroupChatDisplay(props) {
       "send-group-message",
       message,
       `group-${chat.id}`,
+      chat.id,
       props.userRole
     );
-
-    const response = await fetch(`${serverUrl}/user/groupChat/messages`, {
-      method: "PUT",
-      body: JSON.stringify({
-        groupId: chat.id,
-        message: message,
-      }),
-      headers: {
-        auth: token,
-        "Content-Type": "application/json",
-      },
-    });
-    if (response.status === 201) {
-      return;
-    } else {
-      navigate("/serverError");
-    }
   }
 
   // function to scroll the most recent message
@@ -728,6 +733,9 @@ function GroupChatDisplay(props) {
     const messages = document.querySelector(`.${GroupChatsStyles["messages"]}`);
     messages.scrollTop = messages.scrollHeight;
   }
+
+  console.log("user id", userId);
+  console.log("messages", chat.messages);
 
   return (
     <div className={GroupChatsStyles["group-chat-display"]}>
